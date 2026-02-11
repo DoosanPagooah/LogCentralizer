@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="refresh" content="30">
+</head>
+<body class="bg-[#0b1120] text-slate-200 font-sans">
+    <div class="container mx-auto p-8">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                    Application Insights
+                </h1>
+                <p class="text-slate-400 mt-2">Centralized telemetry for all connected services</p>
+            </div>
+            <div class="text-right text-xs text-slate-500">
+                Live Status: <span class="text-emerald-500 animate-pulse">● Connected</span>
+            </div>
+        </div>
+
+    
+    <div class="flex justify-end mb-6">
+    <form method="GET" class="flex items-center gap-3 bg-slate-800 p-2 rounded-lg border border-slate-700">
+        <label for="range" class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-2">Time Range:</label>
+        <select name="range" onchange="this.form.submit()" 
+                class="bg-slate-900 text-sm text-blue-400 font-bold py-1 px-4 rounded border-none focus:ring-2 focus:ring-blue-500">
+            <option value="all" {% if current_range == 'all' %}selected{% endif %}>All Time</option>
+            <option value="1h" {% if current_range == '1h' %}selected{% endif %}>Last Hour</option>
+            <option value="24h" {% if current_range == '24h' %}selected{% endif %}>Last 24 Hours</option>
+            <option value="7d" {% if current_range == '7d' %}selected{% endif %}>Last 7 Days</option>
+        </select>
+    </form>
+</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="bg-[#1e293b] p-6 rounded-xl border border-slate-700 shadow-2xl">
+                <span class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Total Requests</span>
+                <div class="text-4xl font-mono mt-2">{{ stats.total }}</div>
+            </div>
+            <div class="bg-[#1e293b] p-6 rounded-xl border border-slate-700 shadow-2xl">
+                <span class="text-yellow-500 text-sm font-semibold uppercase tracking-wider">Warnings</span>
+                <div class="text-4xl font-mono mt-2 text-yellow-500">{{ stats.warnings }}</div>
+            </div>
+            <div class="bg-[#1e293b] p-6 rounded-xl border border-red-900/30 border-red-500/50 shadow-2xl">
+                <span class="text-red-400 text-sm font-semibold uppercase tracking-wider">Failed Operations</span>
+                <div class="text-4xl font-mono mt-2 text-red-500">{{ stats.errors }}</div>
+            </div>
+        </div>
+
+        <div class="bg-[#1e293b] rounded-xl border border-slate-700 shadow-2xl overflow-hidden">
+            <div class="bg-slate-800/50 px-6 py-4 border-b border-slate-700">
+                <h2 class="font-bold">Transaction Logs</h2>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-slate-500 text-xs uppercase tracking-widest border-b border-slate-700">
+                        <th class="px-6 py-4">Timestamp (UTC)</th>
+                        <th class="px-6 py-4">Service Source</th>
+                        <th class="px-6 py-4">Severity</th>
+                        <th class="px-6 py-4">Message</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for log in logs %}
+                    <tr class="hover:bg-slate-800/80 transition-all duration-200">
+                        <td class="px-6 py-4 font-mono text-xs text-slate-400">{{ log.created_at|date:"H:i:s.u" }}</td>
+                        <td class="px-6 py-4"><span class="text-blue-400 font-medium">{{ log.service_name }}</span></td>
+                        <td class="px-6 py-4">
+                            {% if log.level == 'ERROR' %}
+                                <span class="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1 rounded-full text-[10px] font-black uppercase">Critical</span>
+                            {% elif log.level == 'WARNING' %}
+                                <span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-3 py-1 rounded-full text-[10px] font-black uppercase">Warning</span>
+                            {% else %}
+                                <span class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-full text-[10px] font-black uppercase">Informational</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-300">{{ log.message }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-10 text-center text-slate-500 italic">No telemetry data received yet...</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

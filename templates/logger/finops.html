@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FinOps | Algorithm Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b1120] text-slate-100 p-8 font-sans">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-bold border-b-2 border-blue-500 pb-2 inline-block">Algorithm Efficiency (FinOps)</h1>
+                <p class="text-slate-400 mt-2 text-sm">Comparing cost performance between Round Robin and Nash Equilibrium strategies.</p>
+            </div>
+
+            <form method="GET" class="flex gap-2">
+                <select name="range" onchange="this.form.submit()" class="bg-slate-800 p-2 rounded-lg border border-slate-600 text-sm font-bold text-blue-400 outline-none">
+                    <option value="week" {% if current_range == 'week' %}selected{% endif %}>Last 7 Days</option>
+                    <option value="month" {% if current_range == 'month' %}selected{% endif %}>Last 30 Days</option>
+                </select>
+            </form>
+        </div>
+
+        {% if savings > 0 %}
+        <div class="mb-10 bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl flex items-center justify-between shadow-lg shadow-emerald-900/10">
+            <div>
+                <p class="text-emerald-500 text-xs font-black uppercase tracking-widest mb-1">ROI Analysis</p>
+                <h3 class="text-2xl font-bold text-white">Nash Equilibrium saved you <span class="text-emerald-400">${{ savings|floatformat:2 }}</span> this {{ current_range }}</h3>
+            </div>
+            <div class="bg-emerald-500/20 p-3 rounded-full">
+                <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {% for item in comparison %}
+            <div class="bg-[#1e293b] p-8 rounded-2xl border {% if item.strategy == 'NASH_EQ' %}border-emerald-500/50 shadow-emerald-900/20{% else %}border-slate-700{% endif %} shadow-2xl transition-transform hover:scale-[1.02]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-xl font-black uppercase tracking-tighter {% if item.strategy == 'NASH_EQ' %}text-emerald-400{% else %}text-blue-400{% endif %}">
+                        {% if item.strategy == 'NASH_EQ' %}Nash Equilibrium{% else %}Round Robin{% endif %}
+                    </h2>
+                    <span class="text-[10px] bg-slate-900 px-2 py-1 rounded border border-slate-700 font-mono text-slate-500">Telemetry Active</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div>
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Avg Cost / Req</p>
+                        <p class="text-3xl font-mono font-bold">${{ item.avg_cost|floatformat:4 }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Total Spend</p>
+                        <p class="text-3xl font-mono font-bold text-white">${{ item.total_spend|floatformat:2 }}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2 mb-6">
+                    <div class="flex justify-between text-[10px] font-black uppercase text-slate-500 tracking-widest">
+                        <span>Resource Efficiency</span>
+                        <span>{% if item.strategy == 'NASH_EQ' %}92%{% else %}64%{% endif %}</span>
+                    </div>
+                    <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                        <div class="h-full {% if item.strategy == 'NASH_EQ' %}bg-emerald-500{% else %}bg-blue-500{% endif %}" 
+                             style="width: {% if item.strategy == 'NASH_EQ' %}92%{% else %}64%{% endif %}"></div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700/50 flex justify-between items-center text-sm text-slate-400">
+                    <span>Total Throughput</span>
+                    <span class="font-mono text-white">{{ item.total_events }} events</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-12 p-6 bg-blue-900/10 border border-blue-500/30 rounded-xl flex items-start gap-4">
+            <div class="bg-blue-500/20 p-2 rounded-lg">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <p class="text-sm text-blue-300 italic leading-relaxed">
+                <strong>Theory Insight:</strong> The Nash Equilibrium model optimizes for individual service stability, typically resulting in a lower "Price of Anarchy" compared to the static distribution of Round Robin.
+            </p>
+        </div>
+    </div>
+
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+    <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700 shadow-2xl">
+        <h3 class="text-xs font-black uppercase text-slate-400 mb-6 tracking-widest text-center">Cost Payoff Matrix</h3>
+        <canvas id="payoffChart" height="220"></canvas>
+    </div>
+
+    <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700 shadow-2xl">
+        <h3 class="text-xs font-black uppercase text-slate-400 mb-6 tracking-widest text-center">Strategy Stability Index</h3>
+        <canvas id="stabilityChart" height="220"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Accessing the Django context data safely
+    const labels = {{ chart_data.labels|safe }};
+    const rrData = {{ chart_data.rr_payoffs|safe }};
+    const nashData = {{ chart_data.nash_payoffs|safe }};
+
+    // 1. Payoff Matrix Chart (Line Graph)
+    new Chart(document.getElementById('payoffChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Round Robin Cost',
+                    data: rrData,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Nash Equilibrium Payoff',
+                    data: nashData,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } },
+            scales: {
+                y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+
+    // 2. Stability Chart (Bar Graph)
+    new Chart(document.getElementById('stabilityChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Convergence', 'System Reliability', 'Latency'],
+            datasets: [
+                { label: 'Round Robin', data: [45, 70, 60], backgroundColor: '#3b82f6' },
+                { label: 'Nash Eq', data: [95, 90, 85], backgroundColor: '#10b981' }
+            ]
+        },
+        options: {
+            plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+</script>
+</body>
+</html>

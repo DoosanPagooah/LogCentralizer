@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LogCentralizer | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b1120] text-slate-200 font-sans">
+
+    <nav class="sticky top-0 z-50 bg-[#1e293b]/80 backdrop-blur-md border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">L</div>
+                    <span class="text-xl font-black tracking-tighter text-white">LogCentralizer</span>
+                </div>
+
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                    <a href="{% url 'home' %}" class="text-blue-400">Home</a>
+                    <a href="{% url 'log_insights' %}" class="hover:text-white transition-colors">Insights</a>
+                    <a href="{% url 'finops_dashboard' %}" class="hover:text-white transition-colors">FinOps</a>
+                    <a href="/admin/" class="hover:text-white transition-colors">Admin</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-xs text-slate-500">Hi, {{ user.username }}</span>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-slate-800 hover:bg-red-900/40 text-slate-300 px-4 py-2 rounded-lg text-xs transition-all border border-slate-700">Sign Out</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg text-xs font-bold transition-all">Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <h1 class="text-6xl font-extrabold text-white leading-tight">
+                    Next-Gen <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Telemetry Control.</span>
+                </h1>
+                <p class="text-lg text-slate-400 leading-relaxed max-w-lg">
+                    Monitor distributed microservices with Nash Equilibrium optimization.
+                    Visualize the Price of Anarchy and reduce operational spend in real-time.
+                </p>
+                <div class="flex gap-4">
+                    <a href="{% url 'log_insights' %}" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-xl shadow-blue-900/20">View Dashboards</a>
+                    <a href="{% url 'finops_dashboard' %}" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-xl font-bold transition-all border border-slate-700">Algorithmic ROI</a>
+                </div>
+            </div>
+
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <div class="relative bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000" alt="Dashboard Preview" class="rounded-xl opacity-80">
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
