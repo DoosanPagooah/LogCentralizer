@@ -139,7 +139,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'two_factor:login'
 
 # Optional: Tells Django where to go after logout
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'home'
 
 
 # Add this to LogCentralizer/settings.py

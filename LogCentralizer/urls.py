@@ -22,16 +22,8 @@ from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    # 1. Root URL now points directly to your Home Page
-    path('', home_page, name='home'),
-
-    # 2. 2FA and Account logic (Prefixing with 'account/' avoids conflicts)
+    # This include is what provides the 'two_factor:login' name
     path('account/', include(tf_urls)),
-
-    # 3. App-specific endpoints
+    path('', home_page, name='home'),
     path('api/logs/', include('logger.urls')),
-
-    # Optional: Keep /home/ as an alias if you've linked to it elsewhere
-    path('home/', home_page, name='home_alias'),
 ]

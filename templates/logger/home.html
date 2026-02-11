@@ -40,14 +40,14 @@
             {% endif %}
         </div>
 
-        <form action="{% url 'logout' %}" method="post">
+        <form action="{% url 'two_factor:logout' %}" method="post">
             {% csrf_token %}
             <button type="submit" class="bg-slate-800 hover:bg-red-900/40 text-slate-300 px-4 py-2 rounded-lg text-xs transition-all border border-slate-700">
                 Sign Out
             </button>
         </form>
     {% else %}
-        <a href="{% url 'login' %}" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg text-xs font-bold transition-all">
+        <a href="{% url 'two_factor:login' %}s" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg text-xs font-bold transition-all">
             Sign In
         </a>
     {% endif %}
