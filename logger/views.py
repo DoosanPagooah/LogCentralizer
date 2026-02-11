@@ -12,6 +12,8 @@ from .serializers import LogSerializer
 from django.db.models import Avg, Sum, Count
 from .models import ServiceLog  # <--- MAKE SURE THIS IS HERE
 
+from django_otp.decorators import otp_required
+
 
 class ReceiveLogView(APIView):
     def post(self, request):
@@ -102,3 +104,13 @@ def finops_dashboard(request):
         'savings': savings,
         'chart_data': chart_data,  # Added this to power your new graphs
     })
+
+@otp_required
+def log_dashboard(request):
+    # ... existing logic ...
+    return render(request, 'logger/dashboard.html', context)
+
+@otp_required
+def finops_dashboard(request):
+    # ... existing logic ...
+    return render(request, 'logger/finops.html', context)
