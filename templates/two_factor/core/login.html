@@ -1,19 +1,47 @@
-{% extends "registration/login.html" %} {% block content %}
-<div class="text-center mb-6">
-    <h2 class="text-xl font-bold text-white">Security Verification</h2>
-    <p class="text-slate-400 text-sm mt-2">Enter the 6-digit code from Google Authenticator</p>
-</div>
+{% extends "registration/login.html" %}
 
-<form action="" method="post" class="space-y-6">
-    {% csrf_token %}
-    <div class="space-y-2">
-        {{ wizard.management_form }}
-        <input type="text" name="login-wizard-token" autocomplete="one-time-code" autofocus
-            class="w-full bg-[#0b1120] border border-slate-700 rounded-xl py-4 text-center text-2xl tracking-[0.5em] font-mono text-blue-400 focus:ring-2 focus:ring-blue-500 outline-none">
+{% block content %}
+<div class="text-center mb-10">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 rounded-full mb-6 border border-emerald-500/20">
+        <svg class="w-8 h-8 text-emerald-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
     </div>
 
-    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-all">
-        VERIFY & PROCEED
+    <h1 class="text-3xl font-bold text-white tracking-tight">Security Check</h1>
+    <p class="text-slate-400 mt-2 text-sm uppercase tracking-widest font-semibold">Enter Google Authenticator Token</p>
+</div>
+
+<form action="" method="post" class="space-y-8">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    <div class="space-y-4">
+        <label class="block text-xs font-black uppercase tracking-[0.2em] text-slate-500 text-center">
+            Verification Code
+        </label>
+
+        <div class="relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition"></div>
+            <input type="text" name="login-wizard-token" autocomplete="one-time-code" autofocus
+                class="relative w-full bg-[#0b1120] border border-slate-700 rounded-xl py-5 text-center text-4xl font-mono text-emerald-400 tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                placeholder="000000" maxlength="6">
+        </div>
+
+        <p class="text-[10px] text-slate-500 text-center italic">
+            Open your authenticator app to view your 6-digit code.
+        </p>
+    </div>
+
+    <button type="submit"
+        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-xl transition-all shadow-xl shadow-emerald-900/30 hover:scale-[1.02] active:scale-[0.98]">
+        VERIFY IDENTITY
     </button>
+
+    <div class="text-center mt-6">
+        <a href="{% url 'login' %}" class="text-xs text-slate-500 hover:text-blue-400 transition-colors">
+            &larr; Use a different account
+        </a>
+    </div>
 </form>
 {% endblock %}
