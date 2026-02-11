@@ -57,9 +57,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware', # Add this
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_otp.middleware.OTPMiddleware', # Add this
+
 
 ]
 
@@ -139,3 +140,32 @@ LOGIN_URL = 'two_factor:login'
 
 # Optional: Tells Django where to go after logout
 LOGOUT_REDIRECT_URL = 'login'
+
+
+# Add this to LogCentralizer/settings.py
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django_otp': {
+            'handlers': ['console'],
+            'level': 'DEBUG', # Shows detailed TOTP verification steps
+            'propagate': True,
+        },
+        'two_factor': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
