@@ -17,11 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from logger.views import home_page
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-path('', home_page, name='home'), # Root URL points to Home
+    path('', include(tf_urls)), # This replaces standard auth urls
+    path('', home_page, name='home'), # Root URL points to Home
     path('api/logs/', include('logger.urls')), # This makes the endpoint: /api/logs/receive/
 
-path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

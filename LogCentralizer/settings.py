@@ -43,6 +43,12 @@ INSTALLED_APPS = [
 
     # 2. Add your custom logs app
     'logger',
+
+    # ... your existing apps ...
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware', # Add this
 
 ]
 
@@ -126,7 +133,9 @@ STATIC_URL = 'static/'
 
 # This tells Django where to go after a successful login
 # It must match the 'name' parameter in your path('', ..., name='home')
+#Redirect to your custom home or dashboard after 2FA success
 LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'two_factor:login'
 
 # Optional: Tells Django where to go after logout
 LOGOUT_REDIRECT_URL = 'login'

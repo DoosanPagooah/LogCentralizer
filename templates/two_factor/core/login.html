@@ -1,0 +1,19 @@
+{% extends "registration/login.html" %} {% block content %}
+<div class="text-center mb-6">
+    <h2 class="text-xl font-bold text-white">Security Verification</h2>
+    <p class="text-slate-400 text-sm mt-2">Enter the 6-digit code from Google Authenticator</p>
+</div>
+
+<form action="" method="post" class="space-y-6">
+    {% csrf_token %}
+    <div class="space-y-2">
+        {{ wizard.management_form }}
+        <input type="text" name="login-wizard-token" autocomplete="one-time-code" autofocus
+            class="w-full bg-[#0b1120] border border-slate-700 rounded-xl py-4 text-center text-2xl tracking-[0.5em] font-mono text-blue-400 focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-all">
+        VERIFY & PROCEED
+    </button>
+</form>
+{% endblock %}
